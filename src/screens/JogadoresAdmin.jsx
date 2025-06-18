@@ -66,7 +66,6 @@ export default function JogadoresAdmin() {
     <View style={styles.container}>
       <Text style={styles.titulo}>Gerenciar Jogadores</Text>
 
-      {/* Formulário */}
       <View style={styles.form}>
         <TextInput
           placeholder="Nome"
@@ -105,7 +104,6 @@ export default function JogadoresAdmin() {
         </TouchableOpacity>
       </View>
 
-      {/* Lista */}
       <FlatList
         data={jogadores}
         keyExtractor={(item) => item.id.toString()}

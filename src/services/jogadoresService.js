@@ -83,7 +83,7 @@ export const deleteJogador = async (id) => {
   });
 };
 
-// As funções abaixo não estão sendo usadas no momento
+
 export const addVote = async (id) => {
   return new Promise((resolve, reject) => {
     const index = jogadoresFicticios.findIndex(j => j.id === id);

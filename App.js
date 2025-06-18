@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { PaperProvider } from 'react-native-paper';
 import { JogadoresProvider } from './src/contexts/JogadoresContext';

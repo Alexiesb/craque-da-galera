@@ -1,5 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
-import { get, ref, update } from 'firebase/database'; // aqui importei o get
+import { get, ref, update } from 'firebase/database'; 
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator, Button } from 'react-native-paper';
@@ -7,7 +7,7 @@ import PerfilCard from '../components/PerfilCard';
 import { auth, db, fazerLogout } from '../services/firebase';
 import { useNavigation } from '@react-navigation/native';
 
-// Adicionar console.log para verificar a instância de db
+
 console.log("Instância de db em Perfil.jsx:", db);
 console.log("URL do banco de dados:", db?.app?.options?.databaseURL);
 
@@ -22,14 +22,14 @@ export default function Perfil() {
 
   const handleLogout = async () => {
     try {
-      await fazerLogout(); // chama a função importada
-      navigation.replace('Login'); // redireciona para a tela de login
+      await fazerLogout(); 
+      navigation.replace('Login'); 
     } catch (error) {
       Alert.alert('Erro ao fazer logout.');
     }
   };
 
-  // Função para buscar dados uma única vez (sem listener)
+
   const fetchUserData = async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -38,8 +38,7 @@ export default function Perfil() {
       return;
     }
 
-    // Adicionar mais verificações antes de criar a referência
-    if (db) { // Verificar se db está definido
+    if (db) {
       try {
         const snapshot = await get(ref(db, 'users/' + user.uid));
         if (snapshot.exists()) {
@@ -72,10 +71,10 @@ export default function Perfil() {
       try {
         setUpdatingPhoto(true);
         const user = auth.currentUser;
-        if (user && db) { // Verificar se user e db estão definidos
+        if (user && db) { 
           const userRef = ref(db, 'users/' + user.uid);
           await update(userRef, { foto: resultado.assets[0].uri });
-          // Atualiza localmente também para refletir imediatamente
+         
           setUserData((prev) => ({ ...prev, foto: resultado.assets[0].uri }));
         } else {
            Alert.alert("Erro: Não foi possível atualizar a foto. Usuário ou DB indefinido.");
@@ -92,10 +91,10 @@ export default function Perfil() {
   const handleSaveEdit = async (dataAtualizada) => {
     try {
       const user = auth.currentUser;
-      if (user && db) { // Verificar se user e db estão definidos
+      if (user && db) { 
         const userRef = ref(db, 'users/' + user.uid);
         await update(userRef, dataAtualizada);
-        // Atualiza localmente para refletir as mudanças
+  
         setUserData((prev) => ({ ...prev, ...dataAtualizada }));
       } else {
          Alert.alert("Erro: Não foi possível salvar os dados. Usuário ou DB indefinido.");
@@ -131,9 +130,7 @@ export default function Perfil() {
         />
       ) : (
         <View style={styles.center}>
-          {/* Mensagem mais informativa */}
           <Text style={{textAlign: 'center'}}>Não foi possível carregar os dados do usuário ou os dados não existem.</Text>
-           {/* Opcional: Botão para tentar buscar novamente */}
            <Button mode="outlined" onPress={fetchUserData} style={{marginTop: 20}}>
              Tentar Recarregar Dados
            </Button>

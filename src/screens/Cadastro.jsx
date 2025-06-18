@@ -5,7 +5,7 @@ import { Button, Text } from 'react-native-paper';
 import AuthHeader from '../components/AuthHeader';
 import DividerWithText from '../components/DividerWithText';
 import ThemedTextInput from '../components/ThemedTextInput';
-import { auth, salvarDadosUsuario } from '../services/firebase'; // Importe salvarDadosUsuario
+import { auth, salvarDadosUsuario } from '../services/firebase'; 
 
 export default function Cadastro({ navigation }) {
   const [nome, setNome] = useState('');
@@ -30,11 +30,11 @@ export default function Cadastro({ navigation }) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
       const uid = userCredential.user.uid;
   
-      // Salvar dados adicionais no Realtime Database
+ 
       await salvarDadosUsuario(uid, { nome: nome, telefone: telefone, foto: '' });
 
   
-      navigation.replace('Home'); // ou para onde quiser redirecionar após cadastro
+      navigation.replace('Home');
     } catch (error) {
       console.error('Erro ao cadastrar:', error.message);
       alert('Erro ao cadastrar. Tente novamente.');

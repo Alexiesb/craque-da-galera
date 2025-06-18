@@ -28,11 +28,11 @@ const firebaseConfig = {
   appId: "1:235680073295:web:661cb783340ae170130c3a"
 };
 
-// Inicializar o app Firebase (garantindo que só seja feito uma vez)
+
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getDatabase(app);
 
-// Inicializar o Auth com persistência correta para React Native
+
 let auth;
 try {
   auth = getAuth(app);
@@ -43,12 +43,9 @@ try {
   });
 }
 
-// Inicializar o banco de dados
 const database = getDatabase(app);
 
-// ===========================
-// Funções auxiliares
-// ===========================
+
 
 async function signInAnonymous() {
   try {
@@ -148,21 +145,17 @@ async function deletarJogador(playerId) {
 
 const fazerLogout = async () => {
   try {
-    await signOut(auth); // precisa passar o `auth` como argumento
+    await signOut(auth);
     console.log("Usuário deslogado com sucesso.");
   } catch (error) {
     console.error("Erro ao fazer logout:", error);
-    throw error; // repassa para quem chamou
+    throw error; 
   }
 };
 
-// ===========================
-// Exportações
-// ===========================
 
 export {
   adicionarJogador, app, atualizarJogador, auth,
   database, db, deletarJogador, fazerLogout, onAuthStateChanged, removerVoto, resetarVotos, salvarDadosUsuario, salvarVoto, signInAnonymous,
   usuarioJaVotou
 };
-

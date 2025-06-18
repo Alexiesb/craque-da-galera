@@ -1,4 +1,4 @@
-import { getDatabase, onValue, ref } from 'firebase/database'; // Importar getDatabase, ref e onValue
+import { getDatabase, onValue, ref } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import VotationPlayerCard from '../components/VotationPlayerCard';
@@ -9,32 +9,27 @@ export default function Votacao() {
   const [jogadores, setJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userVotedPlayerId, setUserVotedPlayerId] = useState(null);
-  const [votoContagem, setVotoContagem] = useState({}); // Novo estado para a contagem de votos em tempo real
-  const [currentUser, setCurrentUser] = useState(null); // Estado para armazenar o usuário atual
+  const [votoContagem, setVotoContagem] = useState({}); 
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    // Observar o estado de autenticação paara obter o usuário atual
+  
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
     });
 
     const fetchData = async () => {
       try {
-        // Buscar jogadores
+    
         const jogadoresData = await getJogadores();
         setJogadores(jogadoresData);
 
-        // Verificar se o usuário já votou (somente se houver um usuário autenticado)
         if (currentUser) {
           const votou = await usuarioJaVotou(currentUser.uid);
           if (votou) {
-            // Se o usuário já votou, buscar qual jogador ele votou (isso exigirá uma pequena modificação na função usuarioJaVotou ou uma nova função)
-            // Por enquanto, apenas desabilitamos o botão para todos se ele já votou, ou podemos ajustar a lógica aqui
-            // Para um MVP, podemos simplesmente desabilitar todos os botões de voto se usuarioJaVotou retornar true
-            // Ou modificar usuarioJaVotou para retornar o ID do jogador votado
-             const votoDoUsuario = await usuarioJaVotou(currentUser.uid); // Assumindo que usuarioJaVotou retorna o ID do jogador votado ou null/false
+             const votoDoUsuario = await usuarioJaVotou(currentUser.uid); 
              if(votoDoUsuario) {
-                 setUserVotedPlayerId(votoDoUsuario.playerId); // Ajustar de acordo com o retorno de usuarioJaVotou
+                 setUserVotedPlayerId(votoDoUsuario.playerId); 
              }
 
           }
@@ -47,27 +42,26 @@ export default function Votacao() {
         setLoading(false);
       }
     };
-    
-    // Configurar listener para contagem de votos em tempo real
-    const database = getDatabase(); // Obter instância do Realtime Database
+ 
+    const database = getDatabase(); 
     const contagemVotosRef = ref(database, 'contagemVotos');
     const unsubscribeVotos = onValue(contagemVotosRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setVotoContagem(data);
       } else {
-        setVotoContagem({}); // Resetar se não houver dados
+        setVotoContagem({});
       }
     });
 
     fetchData();
 
-    // Cleanup subscription
+   
     return () => {
-      unsubscribe(); // Limpar listener de autenticação
-      unsubscribeVotos(); // Limpar listener de votos
+      unsubscribe(); 
+      unsubscribeVotos(); 
     };
-  }, [currentUser]); // currentUser como dependência
+  }, [currentUser]); 
 
   const handleVote = async (id) => {
     if (!currentUser) {
@@ -81,11 +75,10 @@ export default function Votacao() {
     }
 
     try {
-      await salvarVoto(currentUser.uid, id); // Usar a função salvarVoto do Firebase
+      await salvarVoto(currentUser.uid, id);
       Alert.alert('Sucesso', 'Seu voto foi registrado!');
-      setUserVotedPlayerId(id); // Marcar que o usuário votou neste jogador
-
-      // A contagem de votos será atualizada automaticamente pelo listener
+      setUserVotedPlayerId(id); 
+    
     } catch (error) {
       console.error('Error saving vote:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao registrar seu voto.');
