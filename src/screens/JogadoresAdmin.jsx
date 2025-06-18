@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { addJogador, deleteJogador, getJogadores, updateJogador } from '../services/jogadoresService';
+import JogadorForm from '../components/JogadorForm';
+import JogadorItem from '../components/JogadorItem';
 
 export default function JogadoresAdmin() {
   const [jogadores, setJogadores] = useState([]);

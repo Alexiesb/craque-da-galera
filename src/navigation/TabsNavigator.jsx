@@ -1,11 +1,11 @@
 // src/navigation/TabsNavigator.jsx
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import Home from '../screens/Home';
+import JogadoresAdmin from '../screens/JogadoresAdmin';
 import Perfil from '../screens/Perfil';
 import Votacao from '../screens/Votacao';
-import JogadoresAdmin from '../screens/JogadoresAdmin';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +48,7 @@ export default function TabsNavigator() {
         name="Admin"
         component={JogadoresAdmin}
         options={{
-          tabBarIcon: ({ color, size }) => <MaterialIcons name="person" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="admin-panel-settings" size={size} color={color} />,
         }}
       />
     </Tab.Navigator>

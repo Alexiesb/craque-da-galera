@@ -1,8 +1,11 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper';
-import { auth } from "../services/firebase";
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
+import AuthHeader from '../components/AuthHeader';
+import DividerWithText from '../components/DividerWithText';
+import ThemedTextInput from '../components/ThemedTextInput';
+import { auth, salvarDadosUsuario } from '../services/firebase'; // Importe salvarDadosUsuario
 
 export default function Cadastro({ navigation }) {
   const [nome, setNome] = useState('');
@@ -10,115 +13,71 @@ export default function Cadastro({ navigation }) {
   const [senha, setSenha] = useState('');
   const [telefone, setTelefone] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  
 
   const handleCadastro = async () => {
     if (!nome || !email || !senha || !telefone || !confirmarSenha) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
-
+  
     if (senha !== confirmarSenha) {
       alert('As senhas não coincidem.');
       return;
     }
-
+  
     try {
-      await createUserWithEmailAndPassword(auth, email, senha);
-      navigation.replace('Home');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const uid = userCredential.user.uid;
+  
+      // Salvar dados adicionais no Realtime Database
+      await salvarDadosUsuario(uid, { nome: nome, telefone: telefone, foto: '' });
+
+  
+      navigation.replace('Home'); // ou para onde quiser redirecionar após cadastro
     } catch (error) {
       console.error('Erro ao cadastrar:', error.message);
       alert('Erro ao cadastrar. Tente novamente.');
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.cartaoCadastro}>
-        <View style={styles.containerLogo}>
-          <Image 
-            source={require('../../assets/logo-semfundo.png')}
-            style={styles.imagemLogo}
-            resizeMode="contain"
-          />
-        </View>
-        
-        <View style={styles.containerBoasVindas}>
-          <Text style={styles.tituloBoasVindas}>Criar Nova Conta</Text>
-          <Text style={styles.subtituloBoasVindas}>Preencha os dados para se cadastrar</Text>
-        </View>
+        <AuthHeader
+ title="Criar Nova Conta"
+ subtitle="Preencha os dados para se cadastrar"
+ />
 
-        <TextInput
+ <ThemedTextInput
           label="Nome Completo"
           value={nome}
           onChangeText={setNome}
-          style={styles.input}
-          mode="outlined"
-          outlineColor="#97c5b4"
-          activeOutlineColor="#016fbe"
-          textColor="#01518b"
-          theme={{
-            colors: {
-              onSurfaceVariant: '#589e85',
-              primary: '#016fbe',
-            }
-          }}
         />
 
-        <TextInput
+ <ThemedTextInput
           label="E-mail"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-          style={styles.input}
-          mode="outlined"
-          outlineColor="#97c5b4"
-          activeOutlineColor="#016fbe"
-          textColor="#01518b"
-          theme={{
-            colors: {
-              onSurfaceVariant: '#589e85',
-              primary: '#016fbe',
-            }
-          }}
         />
 
-        <TextInput
+ <ThemedTextInput
           label="Telefone"
           value={telefone}
           onChangeText={setTelefone}
           keyboardType="phone-pad"
-          style={styles.input}
-          mode="outlined"
-          outlineColor="#97c5b4"
-          activeOutlineColor="#016fbe"
-          textColor="#01518b"
-          theme={{
-            colors: {
-              onSurfaceVariant: '#589e85',
-              primary: '#016fbe',
-            }
-          }}
         />
 
-        <TextInput
+ <ThemedTextInput
           label="Senha"
           value={senha}
           onChangeText={setSenha}
           secureTextEntry
-          style={styles.input}
-          mode="outlined"
-          outlineColor="#97c5b4"
-          activeOutlineColor="#016fbe"
-          textColor="#01518b"
-          theme={{
-            colors: {
-              onSurfaceVariant: '#589e85',
-              primary: '#016fbe',
-            }
-          }}
         />
 
-        <TextInput
+ <ThemedTextInput
           label="Confirmar Senha"
           value={confirmarSenha}
           onChangeText={setConfirmarSenha}
@@ -147,11 +106,7 @@ export default function Cadastro({ navigation }) {
           CADASTRAR
         </Button>
 
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>ou</Text>
-          <View style={styles.dividerLine} />
-        </View>
+ <DividerWithText text="ou" />
 
         <Button 
           mode="text" 
@@ -187,32 +142,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#97c5b4',
   },
-  containerLogo: {
-    alignItems: 'center',
-    marginBottom: 24,
-    marginRight: 10
-  },
-  imagemLogo: {
-    width: 250,
-    height: 70,
-  },
-  containerBoasVindas: {
-    alignItems: 'center',
-    marginBottom: 28,
-  },
-  tituloBoasVindas: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#01518b', 
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtituloBoasVindas: {
-    fontSize: 16,
-    color: '#589e85',
-    textAlign: 'center',
-    fontWeight: '400',
-  },
   input: {
     marginBottom: 16,
     backgroundColor: '#ffffff',
@@ -235,22 +164,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#97c5b4', 
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#589e85',
-    fontSize: 14,
-    fontWeight: '500',
   },
   botaoVoltar: {
     paddingVertical: 4,

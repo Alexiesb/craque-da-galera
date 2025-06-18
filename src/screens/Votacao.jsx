@@ -1,8 +1,8 @@
 import { getDatabase, onValue, ref } from 'firebase/database'; // Importar getDatabase, ref e onValue
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, StyleSheet, Text, View } from 'react-native';
-import { Button, Card, Paragraph, Title } from 'react-native-paper';
-import { auth, salvarVoto, usuarioJaVotou } from '../services/firebase'; // Importar funções do firebase e auth
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, View } from 'react-native';
+import VotationPlayerCard from '../components/VotationPlayerCard';
+import { auth, salvarVoto, usuarioJaVotou } from '../services/firebase';
 import { getJogadores } from '../services/jogadoresService';
 
 export default function Votacao() {
@@ -13,7 +13,7 @@ export default function Votacao() {
   const [currentUser, setCurrentUser] = useState(null); // Estado para armazenar o usuário atual
 
   useEffect(() => {
-    // Observar o estado de autenticação para obter o usuário atual
+    // Observar o estado de autenticação paara obter o usuário atual
     const unsubscribe = auth.onAuthStateChanged(user => {
       setCurrentUser(user);
     });
@@ -107,32 +107,17 @@ export default function Votacao() {
       <FlatList
         data={jogadores}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
-        renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <Card.Content>
-              <View style={styles.row}>
-                {/* Adicionar verificação para item.foto existir */}
-                <Image source={{ uri: item.foto || 'placeholder_image_url' }} style={styles.imagem} />
-                <View style={{ flex: 1, marginLeft: 12 }}>
-                  <Title>{item.nome}</Title>
-                  {/* Adicionar verificações para item.posicao e item.idade existirem */}
-                  <Paragraph>{item.posicao || 'Posição não informada'} - {item.idade ? `${item.idade} anos` : 'Idade não informada'}</Paragraph>
-                   {/* Exibir a contagem de votos diretamente do item do jogador, se disponível, ou 0 */}
-                  <Paragraph>Votos: {(votoContagem[item.id] && votoContagem[item.id].votos) || 0}</Paragraph>
-                  {/* Desabilitar o botão se o usuário já votou e o ID do jogador corresponder ao votado */}
-                  <Button
-                    mode="contained"
-                    onPress={() => handleVote(item.id)}
-                    style={styles.botao}
-                    disabled={userVotedPlayerId !== null && userVotedPlayerId === item.id}
-                  >
-                    {userVotedPlayerId !== null && userVotedPlayerId === item.id ? 'Votado' : 'Votar'}
-                  </Button>
-                </View>
-              </View>
-            </Card.Content>
-          </Card>
-        )}
+        renderItem={({ item }) => {
+          const votes = (votoContagem[item.id] && votoContagem[item.id].votos) || 0;
+          return (
+            <VotationPlayerCard
+              player={item}
+              voteCount={votes}
+              userVotedPlayerId={userVotedPlayerId}
+              onVote={() => handleVote(item.id)}
+            />
+          );
+        }}
       />
     </View>
   );

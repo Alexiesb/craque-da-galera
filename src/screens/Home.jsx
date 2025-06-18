@@ -1,7 +1,6 @@
 import { getDatabase, onValue, ref } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
 import { getJogadores } from '../services/jogadoresService';
 import { getNoticiasFutebol } from '../services/newsService'; // CORRETO AGORA
 
