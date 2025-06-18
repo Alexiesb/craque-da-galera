@@ -5,6 +5,7 @@ import React from 'react';
 import Home from '../screens/Home';
 import Perfil from '../screens/Perfil';
 import Votacao from '../screens/Votacao';
+import JogadoresAdmin from '../screens/JogadoresAdmin';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,9 +14,13 @@ export default function TabsNavigator() {
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: '#438fab',
-        tabBarStyle: { backgroundColor: '#1c1c1d' },
-        headerShown: true,
+        tabBarInactiveTintColor: '#97c5b4', // Cor da aba inativa (barra inferior)
+        tabBarStyle: { backgroundColor: '#76b39d' },
+        headerShown: true, // Mostra o cabeçalho
+        headerStyle: { backgroundColor: '#76b39d' }, // Fundo do cabeçalho (Fundo Principal)
+        headerTintColor: '#01518b', // Cor dos botões e título no cabeçalho (Destaques / Botões Primários)
       }}
+
     >
       <Tab.Screen
         name="Home"
@@ -34,6 +39,14 @@ export default function TabsNavigator() {
       <Tab.Screen
         name="Perfil"
         component={Perfil}
+        options={{
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="person" size={size} color={color} />,
+        }}
+      />
+
+      <Tab.Screen
+        name="Admin"
+        component={JogadoresAdmin}
         options={{
           tabBarIcon: ({ color, size }) => <MaterialIcons name="person" size={size} color={color} />,
         }}

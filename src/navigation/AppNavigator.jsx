@@ -14,6 +14,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="Home" component={TabsNavigator} options={{ headerShown: false }} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
