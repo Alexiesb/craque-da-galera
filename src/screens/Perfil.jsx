@@ -1,22 +1,33 @@
 import * as ImagePicker from 'expo-image-picker';
-import { signOut } from 'firebase/auth';
 import { get, ref, update } from 'firebase/database'; // aqui importei o get
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import PerfilCard from '../components/PerfilCard';
-import { auth, db } from '../services/firebase';
+import { auth, db, fazerLogout } from '../services/firebase';
+import { useNavigation } from '@react-navigation/native';
 
 // Adicionar console.log para verificar a instância de db
 console.log("Instância de db em Perfil.jsx:", db);
-
 console.log("URL do banco de dados:", db?.app?.options?.databaseURL);
 
 
+
+
 export default function Perfil() {
+  const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatingPhoto, setUpdatingPhoto] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await fazerLogout(); // chama a função importada
+      navigation.replace('Login'); // redireciona para a tela de login
+    } catch (error) {
+      Alert.alert('Erro ao fazer logout.');
+    }
+  };
 
   // Função para buscar dados uma única vez (sem listener)
   const fetchUserData = async () => {
@@ -95,14 +106,6 @@ export default function Perfil() {
     }
   };
 
-  const fazerLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-      Alert.alert('Erro ao fazer logout.');
-    }
-  };
 
   useEffect(() => {
     fetchUserData();
@@ -136,7 +139,7 @@ export default function Perfil() {
            </Button>
         </View>
       )}
-      <Button mode="contained" onPress={fazerLogout} style={styles.logoutBtn}>
+      <Button mode="contained" onPress={handleLogout} style={styles.logoutBtn}>
         Sair da Conta
       </Button>
     </View>

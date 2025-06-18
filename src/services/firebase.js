@@ -5,7 +5,8 @@ import {
   getReactNativePersistence,
   initializeAuth,
   onAuthStateChanged,
-  signInAnonymously
+  signInAnonymously,
+  signOut
 } from 'firebase/auth';
 import {
   get,
@@ -145,13 +146,23 @@ async function deletarJogador(playerId) {
   }
 }
 
+const fazerLogout = async () => {
+  try {
+    await signOut(auth); // precisa passar o `auth` como argumento
+    console.log("Usuário deslogado com sucesso.");
+  } catch (error) {
+    console.error("Erro ao fazer logout:", error);
+    throw error; // repassa para quem chamou
+  }
+};
+
 // ===========================
 // Exportações
 // ===========================
 
 export {
   adicionarJogador, app, atualizarJogador, auth,
-  database, db, deletarJogador, onAuthStateChanged, removerVoto, resetarVotos, salvarDadosUsuario, salvarVoto, signInAnonymous,
+  database, db, deletarJogador, fazerLogout, onAuthStateChanged, removerVoto, resetarVotos, salvarDadosUsuario, salvarVoto, signInAnonymous,
   usuarioJaVotou
 };
 
